@@ -1,0 +1,70 @@
+CREATE OR REPLACE PACKAGE BODY MET_ORDREC IS
+
+   PROCEDURE CHECKORDREC IS
+      CANTIDAD1 NUMBER(6);
+      CANTIDAD2 NUMBER(6);
+      CANTIDAD4 NUMBER(6);
+      CANTIDAD8 NUMBER(6);
+      MISTATUSLIN NUMBER(6);
+      CURSOR SELORDREC IS SELECT CODORDREC, CODDIV
+                            FROM VDORDRECCAB ORC
+                           WHERE ORC.STATUS=25;
+      BEGIN
+        FOR ORDREC IN SELORDREC LOOP
+          VDLOG.PONMENSAJE('CHECKORDREC', 'Entrando a chequear Orden de Recepción:', ORDREC.CODORDREC, 'División:',ORDREC.CODDIV);
+          BEGIN
+            FOR ARTS IN (SELECT CODART FROM VDORDRECLIN WHERE CODORDREC=ORDREC.CODORDREC AND CODDIV=ORDREC.CODDIV) LOOP
+              SELECT NUNIDADES INTO CANTIDAD1 FROM ASTSEPUNI SU WHERE CODART=ARTS.CODART AND SU.TIPOSEP=1;
+              SELECT NUNIDADES INTO CANTIDAD2 FROM ASTSEPUNI SU WHERE CODART=ARTS.CODART AND SU.TIPOSEP=2;
+              SELECT NUNIDADES INTO CANTIDAD4 FROM ASTSEPUNI SU WHERE CODART=ARTS.CODART AND SU.TIPOSEP=4;
+              SELECT NUNIDADES INTO CANTIDAD8 FROM ASTSEPUNI SU WHERE CODART=ARTS.CODART AND SU.TIPOSEP=8;
+              IF(CANTIDAD8>CANTIDAD4 or CANTIDAD4>CANTIDAD2 or CANTIDAD2>CANTIDAD1) THEN
+                VDLOG.PONMENSAJE('CHECKORDREC', 'Artículo:', ARTS.CODART, 'Error en los datos de volumetría en este artículo');
+                 MISTATUSLIN:=60;
+              ELSIF CANTIDAD1!=0 THEN -- Al menos la de una sola división está informada
+                VDLOG.PONMENSAJE('CHECKORDREC', 'Artículo:', ARTS.CODART, 'Artículo con volumetría correcta.',
+                                 'División 1:', CANTIDAD1, 'División 2:', CANTIDAD2, 'División 4:', CANTIDAD4, 'División 8:', CANTIDAD8);
+                MISTATUSLIN:=75;
+              ELSE  -- Falta informar la cantidad que cabe en una división, por lo tanto este articulo no es viable
+                VDLOG.PONMENSAJE('CHECKORDREC', 'Al artículo:', ARTS.CODART, 'le falta informar la de una división');
+                MISTATUSLIN:=50;
+              END IF;
+              UPDATE VDORDRECLIN SET STATUS=MISTATUSLIN,CODOPEMODIF=VDUSER.GETUSER, FECMODIF=VD.FECHASYS, HORAMODIF=VD.HORASYS
+                     WHERE CODORDREC=ORDREC.CODORDREC AND CODDIV=ORDREC.CODDIV AND CODART=ARTS.CODART;
+            END LOOP;
+            UPDATE VDORDRECCAB SET STATUS=50, CODOPEMODIF=VDUSER.GETUSER, FECMODIF=VD.FECHASYS, HORAMODIF=VD.HORASYS
+                   WHERE CODORDREC=ORDREC.CODORDREC AND CODDIV=ORDREC.CODDIV;
+          END;
+        END LOOP;
+      END CHECKORDREC;
+
+
+   PROCEDURE ACTIVAORDREC IS
+      NUMLINKO1 NUMBER(6);
+      NUMLINKO2 NUMBER(6);
+      CURSOR SELORDREC IS SELECT CODORDREC, CODDIV
+                            FROM VDORDRECCAB ORC
+                           WHERE ORC.STATUS=50;
+      BEGIN
+         FOR ORDREC IN SELORDREC LOOP
+            VDLOG.PONMENSAJE('ACTIVAORDREC', 'Entrando a ver si se activa la Orden de Recepción:', ORDREC.CODORDREC, 'División:',ORDREC.CODDIV);
+            BEGIN
+               SELECT COUNT(*) INTO NUMLINKO1
+                      FROM VDORDRECLIN
+                      WHERE CODORDREC=ORDREC.CODORDREC AND CODDIV=ORDREC.CODDIV AND STATUS=50;
+               SELECT COUNT(*) INTO NUMLINKO2
+                      FROM VDORDRECLIN
+                      WHERE CODORDREC=ORDREC.CODORDREC AND CODDIV=ORDREC.CODDIV AND STATUS=60;
+               IF (NUMLINKO1=0 and NUMLINKO2=0) THEN
+                 VDLOG.PONMENSAJE('ACTIVAORDREC', 'Se activa la Orden de Recepción:', ORDREC.CODORDREC, 'División:',ORDREC.CODDIV);
+                 UPDATE VDORDRECCAB
+                        SET STATUS=75, CODOPEMODIF=VDUSER.GETUSER, FECMODIF=VD.FECHASYS, HORAMODIF=VD.HORASYS
+                        WHERE CODORDREC=ORDREC.CODORDREC AND CODDIV=ORDREC.CODDIV;
+               ELSE
+                  VDLOG.PONMENSAJE('ACTIVAORDREC', 'No se activa la Orden de Recepción:', ORDREC.CODORDREC, 'División:',ORDREC.CODDIV,'Hay', NUMLINKO1, 'artículos sin informar y', NUMLINKO2, 'artículos con error en la volumetría' );
+               END IF;
+            END;
+         END LOOP;
+      END ACTIVAORDREC;
+
+END;

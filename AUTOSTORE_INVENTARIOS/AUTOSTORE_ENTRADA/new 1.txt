@@ -1,0 +1,136 @@
+<td style="width:200px;height:150px;text-align:center;font-family:arial;font-size:100px">59</td>
+
+CURSOR=CSELCAMPOHTML BEGIN
+                       :AUXDIV1:='background-color:white;';
+                       :AUXDIV2:='background-color:white;';
+                       :AUXDIV3:='background-color:white;';
+                       :AUXDIV4:='background-color:white;';
+                       :AUXDIV5:='background-color:white;';
+                       :AUXDIV6:='background-color:white;';
+                       :AUXDIV7:='background-color:white;';
+                       :AUXDIV8:='background-color:white;';                       
+                       :V10HTML:='<div style="position:absolute;top:15PX;left:500PX;border-style:solid;border-color:darkgrey;border-width:thick;border-radius:5px">
+                                    <table>
+                                      <tr>
+                                        <td style="width:75px;height:50px;'||:AUXDIV4||'"></td>
+                                        <td style="width:75px;height:50px;'||:AUXDIV8||'"></td>
+                                      </tr>
+                                      <tr>
+                                        <td style="width:75px;height:50px;'||:AUXDIV3||'"></td>
+                                        <td style="width:75px;height:50px;'||:AUXDIV7||'"></td>
+                                      </tr>
+                                      <tr>
+                                        <td style="width:75px;height:50px;'||:AUXDIV2||'"></td>
+                                        <td style="width:75px;height:50px;'||:AUXDIV6||'"></td>
+                                      </tr>
+                                      <tr>
+                                        <td style="width:75px;height:50px;'||:AUXDIV1||'"></td>
+                                        <td style="width:75px;height:50px;'||:AUXDIV5||'"></td>
+                                      </tr>
+                                  </div>';
+                     END;@
+
+IF MIPUERTO=3 THEN
+                         IF :NUMSEPARACIONES=1 THEN
+                           :V10HTML:='<div style="position:absolute;top:15PX;left:500PX;border-style:solid;border-color:darkgrey;border-width:thick;border-radius:5px">
+                                        <table>
+                                          <tr>
+                                            <td style="width:150px;height:200px;color:white;'||:AUXDIV1||'">'||:CANT1||'</td>
+                                          </tr>
+                                        </table>
+                                      </div>';
+                         ELSIF :NUMSEPARACIONES=2 THEN
+                           :V10HTML:='<div style="position:absolute;top:15PX;left:500PX;border-style:solid;border-color:darkgrey;border-width:thick;border-radius:5px">
+                                        <table>
+                                          <tr>
+                                            <td style="width:75px;height:200px;color:white;'||:AUXDIV1||'">'||:CANT1||'</td>
+                                            <td style="width:75px;height:200px;color:white;'||:AUXDIV2||'">'||:CANT2||'</td>
+                                          </tr>
+                                        </table>
+                                      </div>';
+                         ELSIF :NUMSEPARACIONES=4 THEN
+                           :V10HTML:='<div style="position:absolute;top:15PX;left:500PX;border-style:solid;border-color:darkgrey;border-width:thick;border-radius:5px">
+                                        <table>
+                                          <tr>
+                                            <td style="width:75px;height:100px;color:white;'||:AUXDIV2||'">'||:CANT2||'</td>
+                                            <td style="width:75px;height:100px;color:white;'||:AUXDIV4||'">'||:CANT4||'</td>
+                                          </tr>
+                                          <tr>
+                                            <td style="width:75px;height:100px;color:white;'||:AUXDIV1||'">'||:CANT1||'</td>
+                                            <td style="width:75px;height:100px;color:white;'||:AUXDIV3||'">'||:CANT3||'</td>
+                                         </tr>
+                                        </table>
+                                      </div>';
+                         ELSE
+                           :V10HTML:='<div style="position:absolute;top:15PX;left:500PX;border-style:solid;border-color:darkgrey;border-width:thick;border-radius:5px">
+                                        <table>
+                                          <tr>
+                                            <td style="width:75px;height:50px;color:white;'||:AUXDIV4||'">'||:CANT4||'</td>
+                                            <td style="width:75px;height:50px;color:white;'||:AUXDIV8||'">'||:CANT8||'</td>
+                                          </tr>
+                                          <tr>
+                                            <td style="width:75px;height:50px;color:white;'||:AUXDIV3||'">'||:CANT3||'</td>
+                                            <td style="width:75px;height:50px;color:white;'||:AUXDIV7||'">'||:CANT7||'</td>
+                                          </tr>
+                                          <tr>
+                                            <td style="width:75px;height:50px;color:white;'||:AUXDIV2||'">'||:CANT2||'</td>
+                                            <td style="width:75px;height:50px;color:white;'||:AUXDIV6||'">'||:CANT6||'</td>
+                                          </tr>
+                                          <tr>
+                                            <td style="width:75px;height:50px;color:white;'||:AUXDIV1||'">'||:CANT1||'</td>
+                                            <td style="width:75px;height:50px;color:white;'||:AUXDIV5||'">'||:CANT5||'</td>
+                                          </tr>
+                                      </div>';
+                        END IF;
+					  ELSE
+					    IF :NUMSEPARACIONES=1 THEN
+                          :V10HTML:='<div style="position:absolute;top:15PX;left:500PX;border-style:solid;border-color:darkgrey;border-width:thick;border-radius:5px">
+                                       <table>
+                                         <tr>
+                                           <td style="width:200px;height:150px;'||:AUXDIV1||'"></td>
+                                         </tr>
+                                       </table>
+                                     </div>';
+                        ELSIF :NUMSEPARACIONES=2 THEN
+                          :V10HTML:='<div style="position:absolute;top:15PX;left:500PX;border-style:solid;border-color:darkgrey;border-width:thick;border-radius:5px">
+                                       <table>
+                                         <tr>
+                                           <td style="width:200px;height:75px;'||:AUXDIV1||'"></td>
+										 </tr>
+										 <tr>
+                                           <td style="width:200px;height:75px;'||:AUXDIV2||'"></td>
+                                         </tr>
+                                       </table>
+                                     </div>';
+                        ELSIF :NUMSEPARACIONES=4 THEN
+                          :V10HTML:='<div style="position:absolute;top:15PX;left:500PX;border-style:solid;border-color:darkgrey;border-width:thick;border-radius:5px">
+                                       <table>
+                                         <tr>
+                                           <td style="width:100px;height:75px;'||:AUXDIV1||'"></td>
+                                           <td style="width:100px;height:75px;'||:AUXDIV2||'"></td>
+                                         </tr>
+                                         <tr>
+                                           <td style="width:100px;height:75px;'||:AUXDIV3||'"></td>
+                                           <td style="width:100px;height:75px;'||:AUXDIV4||'"></td>
+                                        </tr>
+                                       </table>
+                                     </div>';
+                        ELSE
+                          :V10HTML:='<div style="position:absolute;top:15PX;left:500PX;border-style:solid;border-color:darkgrey;border-width:thick;border-radius:5px">
+                                       <table>
+                                         <tr>
+                                           <td style="width:50px;height:75px;'||:AUXDIV1||'"></td>
+                                           <td style="width:50px;height:75px;'||:AUXDIV2||'"></td>
+										   <td style="width:50px;height:75px;'||:AUXDIV3||'"></td>
+                                           <td style="width:50px;height:75px;'||:AUXDIV4||'"></td>
+                                         </tr>
+                                         <tr>
+                                           <td style="width:50px;height:75px;'||:AUXDIV5||'"></td>
+                                           <td style="width:50px;height:75px;'||:AUXDIV6||'"></td>
+										   <td style="width:50px;height:75px;'||:AUXDIV7||'"></td>
+                                           <td style="width:50px;height:75px;'||:AUXDIV8||'"></td>
+                                     </div>';
+					    END IF;
+                      END IF;				
+                     END;
+                   END;@
